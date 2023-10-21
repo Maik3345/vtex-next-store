@@ -12,7 +12,11 @@ export const useProfile = () => {
   const handlerGetLocalProfile = () => {
     const localProfile = localStorage.getItem("profile");
     if (localProfile) {
-      setProfile(JSON.parse(localProfile));
+      const data = JSON.parse(localProfile);
+      if (!data?.email) {
+        return false;
+      }
+      setProfile(data);
       return true;
     }
     return false;
@@ -21,7 +25,7 @@ export const useProfile = () => {
   const handleGetProfile = async () => {
     if (!handlerGetLocalProfile()) {
       const response = await getProfileService();
-      localStorage.setItem("profile", JSON.stringify(response));
+      localStorage.setItem("profile", JSON.stringify(response.results[0]));
       setProfile(response.results[0]);
     }
   };

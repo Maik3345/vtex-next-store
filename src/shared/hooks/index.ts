@@ -1,2 +1,2 @@
-export * from './useProfile';
-export * from './useStore';
+export * from "./useProfile";
+export * from "./store";
