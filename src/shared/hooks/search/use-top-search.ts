@@ -12,12 +12,18 @@ export const useTopSearch = (): UseTopSearchType => {
   const handleGetTopSearch = async () => {
     if (shopName) {
       const response = await getTopSearchService(shopName);
+
+      if (!response || !response.searches || response.searches.length === 0) {
+        setTopSearch([]);
+        return;
+      }
+
       const mappedSearch: SearchResultItem[] = response.searches.map(
         (search) => ({
           content: search.term,
           objectID: search.term,
           type: "lvl1",
-          url: `/search?q=${search.term}`,
+          url: `/${search.term}?map=ft&_q=${search.term}`,
           hierarchy: { lvl1: search.term },
         })
       );

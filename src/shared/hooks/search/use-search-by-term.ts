@@ -1,12 +1,14 @@
 import {
   SearchResultItem,
   getSearchByTermService,
+  trackEvent,
+  useSearchByTermStore,
   useShopStore,
 } from "@/shared";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export interface UseSearchByTermType {
-  searchByTerm: SearchResultItem[];
+  results: SearchResultItem[];
   term: string;
   totalSearchItems: number;
   getViewAllUrl: () => string;
@@ -15,13 +17,18 @@ export interface UseSearchByTermType {
 
 export const useSearchByTerm = (): UseSearchByTermType => {
   const { shopName } = useShopStore();
-  const [searchByTerm, setSearchByTerm] = useState<SearchResultItem[]>([]);
-  const [term, setTerm] = useState("");
-  const [totalSearchItems, setTotalSearchItems] = useState(0);
+  const {
+    results,
+    term,
+    totalSearchItems,
+    setResults,
+    setTerm,
+    setTotalSearchItems,
+  } = useSearchByTermStore();
 
-  const handleGetSearchByTerm = async (term: string) => {
+  const handleGetSearchByTerm = async (termSearch: string) => {
     if (shopName) {
-      const response = await getSearchByTermService(shopName, term);
+      const response = await getSearchByTermService(shopName, termSearch);
       const mappedSearch: SearchResultItem[] = response.products.map(
         (search) => ({
           content: search.productName,
@@ -32,8 +39,22 @@ export const useSearchByTerm = (): UseSearchByTermType => {
           hierarchy: { lvl1: search.cacheId },
         })
       );
-      setTotalSearchItems(response.pagination.count);
-      setSearchByTerm(mappedSearch);
+
+      trackEvent("Cmdk - Search", {
+        name: "cmdk - search",
+        action: "search",
+        category: "cmdk",
+        data: {
+          query: term,
+          words: term.split(" "),
+          matches: mappedSearch?.map((match) => match.url).join(", "),
+        },
+      });
+
+      if (response?.pagination?.count) {
+        setTotalSearchItems(response?.pagination?.count);
+      }
+      setResults(mappedSearch);
     }
   };
 
@@ -48,6 +69,8 @@ export const useSearchByTerm = (): UseSearchByTermType => {
 
   useEffect(() => {
     if (term == null || term.trim() === "") {
+      setTotalSearchItems(0);
+      setResults([]);
       return;
     }
 
@@ -58,5 +81,5 @@ export const useSearchByTerm = (): UseSearchByTermType => {
     }
   }, [term]);
 
-  return { term, totalSearchItems, searchByTerm, handleSetTerm, getViewAllUrl };
+  return { term, results, totalSearchItems, getViewAllUrl, handleSetTerm };
 };

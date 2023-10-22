@@ -1,30 +1,17 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 "use client";
 
+import { MAX_RECENT_SEARCHES, RECENT_SEARCHES_KEY } from "@/config";
 import {
-  MATCH_KEYS,
-  MAX_RECENT_SEARCHES,
-  MAX_RESULTS,
-  RECENT_SEARCHES_KEY,
-} from "@/config";
-import searchData from "@/config/search-meta.json";
-import { ImageProductType, trackEvent, useCmdkStore } from "@/shared";
+  ImageProductType,
+  trackEvent,
+  useCmdkStore,
+  useSearchByTermStore,
+} from "@/shared";
 import { isAppleDevice } from "@react-aria/utils";
 import { useLocalStorage, writeStorage } from "@rehooks/local-storage";
-import { intersectionBy, isEmpty } from "lodash";
-import { matchSorter } from "match-sorter";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Button,
-  ButtonProps,
-  Kbd,
-  Modal,
-  ModalContent,
-} from "@nextui-org/react";
-import { CloseIcon } from "@nextui-org/shared-icons";
-import { clsx } from "@nextui-org/shared-utils";
 import React, {
-  FC,
   useCallback,
   useEffect,
   useMemo,
@@ -32,11 +19,26 @@ import React, {
   useState,
 } from "react";
 import MultiRef from "react-multi-ref";
+import { isEmpty } from "lodash";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { tv } from "tailwind-variants";
 import { useUpdateEffect } from "..";
 
-export interface UseCmdkType {}
+export interface UseCmdkType {
+  slots: any;
+  query: string;
+  activeItem: number;
+  listRef: React.RefObject<HTMLDivElement>;
+  isOpen: boolean;
+  menuNodes: MultiRef<number, HTMLElement>;
+  recentSearches: SearchResultItem[] | null;
+  eventRef: React.MutableRefObject<"mouse" | "keyboard" | undefined>;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  setActiveItem: React.Dispatch<React.SetStateAction<number>>;
+  onInputKeyDown: (e: React.KeyboardEvent) => void;
+  onItemSelect: (item: SearchResultItem) => void;
+  onClose: () => void;
+}
 
 export interface SearchResultItem {
   content: string;
@@ -93,7 +95,7 @@ const cmdk = tv({
       "active:opacity-70",
       "cursor-pointer",
       "transition-opacity",
-      "data-[active=true]:bg-primary",
+      "data-[active=true]:bg-secondary",
       "data-[active=true]:text-primary-foreground",
     ],
     leftWrapper: ["flex", "gap-3", "items-center", "w-full", "max-w-full"],
@@ -120,14 +122,12 @@ const cmdk = tv({
       "text-center",
       "items-center",
       "justify-center",
-      "h-32",
+      "h-full",
     ],
   },
 });
 
-const hideOnPaths = ["examples"];
-
-export const useCmdk = () => {
+export const useCmdk = (): UseCmdkType => {
   const [query, setQuery] = useState("");
   const [activeItem, setActiveItem] = useState(0);
   const [menuNodes] = useState(() => new MultiRef<number, HTMLElement>());
@@ -136,10 +136,11 @@ export const useCmdk = () => {
   const eventRef = useRef<"mouse" | "keyboard">();
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { results } = useSearchByTermStore();
   const { isOpen, onClose, onOpen } = useCmdkStore();
   const [recentSearches] =
     useLocalStorage<SearchResultItem[]>(RECENT_SEARCHES_KEY);
-  const shouldOpen = !hideOnPaths.some((path) => pathname?.includes(path));
+  const items = !isEmpty(results) ? results : recentSearches ?? [];
 
   const addToRecentSearches = (item: SearchResultItem) => {
     let searches = recentSearches ?? [];
@@ -159,49 +160,6 @@ export const useCmdk = () => {
       );
     }
   };
-
-  const results = useMemo<SearchResultItem[]>(
-    function getResults() {
-      if (query.length < 2) return [];
-
-      const data = searchData as SearchResultItem[];
-
-      const words = query.split(" ");
-
-      if (words.length === 1) {
-        return matchSorter(data, query, {
-          keys: MATCH_KEYS,
-        }).slice(0, MAX_RESULTS);
-      }
-
-      const matchesForEachWord = words.map((word) =>
-        matchSorter(data, word, {
-          keys: MATCH_KEYS,
-        })
-      );
-
-      const matches = intersectionBy(...matchesForEachWord, "objectID").slice(
-        0,
-        MAX_RESULTS
-      );
-
-      trackEvent("Cmdk - Search", {
-        name: "cmdk - search",
-        action: "search",
-        category: "cmdk",
-        data: {
-          query,
-          words,
-          matches: matches?.map((match) => match.url).join(", "),
-        },
-      });
-
-      return matches;
-    },
-    [query]
-  );
-
-  const items = !isEmpty(results) ? results : recentSearches ?? [];
 
   // Toggle the menu when ⌘K / CTRL K is pressed
   useEffect(() => {
@@ -304,16 +262,13 @@ export const useCmdk = () => {
     return {
       slots,
       query,
-      items,
       activeItem,
       listRef,
       isOpen,
       menuNodes,
       recentSearches,
-      results,
       eventRef,
       pathname,
-      shouldOpen,
       setQuery,
       setActiveItem,
       onInputKeyDown,
@@ -322,15 +277,12 @@ export const useCmdk = () => {
     };
   }, [
     slots,
-    shouldOpen,
     query,
-    items,
     activeItem,
     listRef,
     isOpen,
     menuNodes,
     recentSearches,
-    results,
     eventRef,
     pathname,
   ]);

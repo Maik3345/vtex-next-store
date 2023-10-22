@@ -1,3 +1,3 @@
-export * from './cmdk';
-export * from './profile';
-export * from './shop';
+export * from "./profile";
+export * from "./search";
+export * from "./shop";

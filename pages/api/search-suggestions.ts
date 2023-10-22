@@ -7,12 +7,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { account } = req.query;
+  const { account, term } = req.query;
 
-  if (!account) return res.status(400).json({ searches: [] });
+  if (!account || !term) return res.status(400).json({ searches: [] });
 
   const response = await fetch(
-    `https://${account}.vtexcommercestable.com.br/api/io/_v/api/intelligent-search/top_searches?locale=en-US`,
+    `https://${account}.vtexcommercestable.com.br/api/io/_v/api/intelligent-search/search_suggestions?query=${term}`,
     {
       mode: "no-cors",
       headers: {
@@ -21,6 +21,7 @@ export default async function handler(
       },
     }
   );
-  const data = await response.json().then((data) => data.searches.slice(0, 5));
-  res.status(200).json({ searches: data });
+
+  const data = await response.json();
+  res.status(200).json(data);
 }

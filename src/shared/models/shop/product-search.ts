@@ -1,11 +1,11 @@
 export interface ProductSearchType {
   products: Product[];
   recordsFiltered: number;
-  correction: Correction;
+  correction: Correction | null;
   fuzzy: string;
   operator: string;
   translated: boolean;
-  pagination: Pagination;
+  pagination: Pagination | null;
 }
 
 export interface Correction {
