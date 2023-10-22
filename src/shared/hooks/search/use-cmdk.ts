@@ -138,7 +138,7 @@ export const useCmdk = () => {
   const { isOpen, onClose, onOpen } = useCmdkStore();
   const [recentSearches] =
     useLocalStorage<SearchResultItem[]>(RECENT_SEARCHES_KEY);
-  const shouldOpen = !hideOnPaths.some((path) => pathname.includes(path));
+  const shouldOpen = !hideOnPaths.some((path) => pathname?.includes(path));
 
   const addToRecentSearches = (item: SearchResultItem) => {
     let searches = recentSearches ?? [];
