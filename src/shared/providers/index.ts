@@ -1,2 +1,2 @@
-export * from './ProfileProvider';
-export * from './StoreProvider';
+export * from "./profile-provider";
+export * from "./shop-provider";

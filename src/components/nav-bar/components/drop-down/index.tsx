@@ -1,19 +1,21 @@
 "use client";
-import { useProfileContext, useStoreContext } from "@/shared";
+
+import { useProfileStore, useShopStore } from "@/shared";
 import {
   Avatar,
   AvatarGroup,
-  Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Dropdown as UIDropdown,
 } from "@nextui-org/react";
-import { StoreSetupModal } from "../StoreSetupModal";
 import { useEffect, useState } from "react";
+import { ShopSetupModal } from "../shop-setup-modal";
 
-export const DropDownComponent = () => {
-  const { profile } = useProfileContext();
-  const { shortStoreName, onOpen } = useStoreContext();
+export const DropDown = () => {
+  const { profile } = useProfileStore();
+  const { shortShopName, disclosure } = useShopStore();
+  const { onOpen } = disclosure ?? {};
   const [showComponent, setShowComponent] = useState(false);
 
   useEffect(() => {
@@ -21,15 +23,15 @@ export const DropDownComponent = () => {
     setTimeout(() => {
       setShowComponent(true);
     }, 100);
-  }, [shortStoreName]);
+  }, [shortShopName]);
 
   if (!profile || !showComponent) return null;
 
   return (
     <>
-      <Dropdown placement="bottom-end">
+      <UIDropdown placement="bottom-end">
         <AvatarGroup isBordered>
-          {shortStoreName && (
+          {shortShopName && (
             <Avatar
               isBordered
               as="button"
@@ -37,7 +39,7 @@ export const DropDownComponent = () => {
               color="secondary"
               size="sm"
               onClick={onOpen}
-              icon={<p>{shortStoreName.charAt(0).toUpperCase()}</p>}
+              icon={<p>{shortShopName.charAt(0).toUpperCase()}</p>}
             />
           )}
           <DropdownTrigger>
@@ -59,15 +61,15 @@ export const DropDownComponent = () => {
           </DropdownItem>
           <DropdownItem onPress={onOpen} key="settings">
             <p>
-              {shortStoreName
-                ? `Current store: ${shortStoreName}`
-                : "Configure store:"}
+              {shortShopName
+                ? `Current shop: ${shortShopName}`
+                : "Configure shop:"}
             </p>
-            Setup the store
+            Setup the shop
           </DropdownItem>
         </DropdownMenu>
-      </Dropdown>
-      <StoreSetupModal />
+      </UIDropdown>
+      <ShopSetupModal />
     </>
   );
 };
