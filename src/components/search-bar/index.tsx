@@ -2,11 +2,9 @@
 
 import { trackEvent, useShopStore, useCmdkStore } from "@/shared";
 import { clsx } from "@nextui-org/shared-utils";
-import { useFocusRing } from "@react-aria/focus";
-import { usePress } from "@react-aria/interactions";
 import { isAppleDevice } from "@react-aria/utils";
 import { useEffect, useState } from "react";
-import { SearchLinearIcon } from "..";
+import { SearchLinearIcon } from "../icons";
 import { dataFocusVisibleClasses } from "@nextui-org/theme";
 import { Button, Kbd } from "@nextui-org/react";
 
@@ -27,12 +25,6 @@ export const SearchBar = () => {
       category: "cmdk",
     });
   };
-
-  const { pressProps } = usePress({
-    onPress: handleOpenCmdk,
-  });
-
-  const { focusProps, isFocusVisible } = useFocusRing();
 
   return (
     <>
@@ -63,14 +55,12 @@ export const SearchBar = () => {
 
       <div className="flex sm:hidden">
         <button
+          onClick={handleOpenCmdk}
           className={clsx(
             "transition-opacity p-1 hover:opacity-80 rounded-full cursor-pointer outline-none",
             // focus ring
             ...dataFocusVisibleClasses
           )}
-          data-focus-visible={isFocusVisible}
-          {...focusProps}
-          {...pressProps}
         >
           <SearchLinearIcon
             className="mt-px text-default-600 dark:text-default-500"

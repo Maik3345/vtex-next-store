@@ -127,101 +127,107 @@ export const Cmdk: FC<{}> = () => {
   );
 
   return (
-    <Modal
-      hideCloseButton
-      backdrop="opaque"
-      classNames={{
-        base: [
-          "mt-[20vh]",
-          "border-small",
-          "dark:border-default-100",
-          "supports-[backdrop-filter]:bg-background/80",
-          "dark:supports-[backdrop-filter]:bg-background/30",
-          "supports-[backdrop-filter]:backdrop-blur-md",
-          "supports-[backdrop-filter]:backdrop-saturate-150",
-        ],
-        backdrop: ["bg-black/80"],
-      }}
-      isOpen={isOpen && shouldOpen}
-      motionProps={{
-        onAnimationComplete: () => {
-          if (!isOpen) {
-            setQuery("");
-          }
-        },
-      }}
-      placement="top-center"
-      scrollBehavior="inside"
-      size="xl"
-      onClose={() => onClose()}
-    >
-      <ModalContent>
-        <Command
-          className={slots.base()}
-          label="Quick search command"
-          shouldFilter={false}
-        >
-          <div className={slots.header()}>
-            <SearchLinearIcon className={slots.searchIcon()} strokeWidth={2} />
-            <Command.Input
-              autoFocus={!isWebKit()}
-              className={slots.input()}
-              placeholder={`Search in ${shopName}`}
-              value={query}
-              onKeyDown={onInputKeyDown}
-              onValueChange={setQuery}
-            />
-            {query.length > 0 && <CloseButton onPress={() => setQuery("")} />}
-            <Kbd className="hidden md:block border-none px-2 py-1 ml-2 font-medium text-[0.6rem]">
-              ESC
-            </Kbd>
-          </div>
-          <Command.List ref={listRef} className={slots.list()} role="listbox">
-            {query.length > 0 && (
-              <Command.Empty>
-                <div className={slots.emptyWrapper()}>
-                  <div>
-                    <p>No results for &quot;{query}&quot;</p>
-                    {query.length === 1 ? (
-                      <p className="text-default-400">
-                        Try adding more characters to your search term.
-                      </p>
-                    ) : (
-                      <p className="text-default-400">
-                        Try searching for something else.
-                      </p>
-                    )}
+    <>
+      <Modal
+        hideCloseButton
+        backdrop="opaque"
+        classNames={{
+          base: [
+            "mt-[20vh]",
+            "border-small",
+            "dark:border-default-100",
+            "supports-[backdrop-filter]:bg-background/80",
+            "dark:supports-[backdrop-filter]:bg-background/30",
+            "supports-[backdrop-filter]:backdrop-blur-md",
+            "supports-[backdrop-filter]:backdrop-saturate-150",
+          ],
+          backdrop: ["bg-black/80"],
+        }}
+        isOpen={isOpen && shouldOpen}
+        motionProps={{
+          onAnimationComplete: () => {
+            if (!isOpen) {
+              setQuery("");
+            }
+          },
+        }}
+        placement="top-center"
+        scrollBehavior="inside"
+        size="xl"
+        onClose={() => onClose()}
+      >
+        <ModalContent>
+          <Command
+            className={slots.base()}
+            label="Quick search command"
+            shouldFilter={false}
+          >
+            <div className={slots.header()}>
+              <SearchLinearIcon
+                className={slots.searchIcon()}
+                strokeWidth={2}
+              />
+              <Command.Input
+                autoFocus={!isWebKit()}
+                className={slots.input()}
+                placeholder={`Search in ${shopName}`}
+                value={query}
+                onKeyDown={onInputKeyDown}
+                onValueChange={setQuery}
+              />
+              {query.length > 0 && <CloseButton onPress={() => setQuery("")} />}
+              <Kbd className="hidden md:block border-none px-2 py-1 ml-2 font-medium text-[0.6rem]">
+                ESC
+              </Kbd>
+            </div>
+            <Command.List ref={listRef} className={slots.list()} role="listbox">
+              {query.length > 0 && (
+                <Command.Empty>
+                  <div className={slots.emptyWrapper()}>
+                    <div>
+                      <p>No results for &quot;{query}&quot;</p>
+                      {query.length === 1 ? (
+                        <p className="text-default-400">
+                          Try adding more characters to your search term.
+                        </p>
+                      ) : (
+                        <p className="text-default-400">
+                          Try searching for something else.
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Command.Empty>
-            )}
+                </Command.Empty>
+              )}
 
-            {isEmpty(query) &&
-              (isEmpty(recentSearches) ? (
-                <div className={slots.emptyWrapper()}>
-                  <p className="text-default-400">No recent searches</p>
-                </div>
-              ) : (
-                recentSearches &&
-                recentSearches.length > 0 && (
-                  <Command.Group
-                    heading={
-                      <div className="flex items-center justify-between">
-                        <p className="text-default-600">Recent</p>
-                      </div>
-                    }
-                  >
-                    {recentSearches.map((item, index) =>
-                      renderItem(item, index, true)
-                    )}
-                  </Command.Group>
-                )
-              ))}
+              {isEmpty(query) &&
+                (isEmpty(recentSearches) ? (
+                  <div className={slots.emptyWrapper()}>
+                    <p className="text-default-400">No recent searches</p>
+                  </div>
+                ) : (
+                  recentSearches &&
+                  recentSearches.length > 0 && (
+                    <Command.Group
+                      heading={
+                        <div className="flex items-center justify-between">
+                          <p className="text-default-600">Recent</p>
+                        </div>
+                      }
+                    >
+                      {recentSearches.map((item, index) =>
+                        renderItem(item, index, true)
+                      )}
+                    </Command.Group>
+                  )
+                ))}
 
-            {results.map((item, index) => renderItem(item, index))}
-          </Command.List>
-        </Command>
-      </ModalContent>
-    </Modal>
+              {results.map((item, index) => renderItem(item, index))}
+            </Command.List>
+          </Command>
+        </ModalContent>
+      </Modal>
+      {JSON.stringify(isOpen)}
+    </>
   );
 };
