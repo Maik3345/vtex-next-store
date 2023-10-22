@@ -22,9 +22,10 @@ import {
   SearchLinearIcon,
 } from "../icons";
 
-import { SearchResultItem, useCmdk, useShopStore } from "@shared";
+import { SearchResultItem, useCmdk, useShopStore, useTopSearch } from "@shared";
 
 export const Cmdk: FC<{}> = () => {
+  const { topSearch } = useTopSearch();
   const { shopName } = useShopStore();
   const {
     slots,
@@ -221,6 +222,18 @@ export const Cmdk: FC<{}> = () => {
                     </Command.Group>
                   )
                 ))}
+
+              <Command.Group
+                heading={
+                  <div className="flex items-center justify-between">
+                    <p className="text-default-600">Top search</p>
+                  </div>
+                }
+              >
+                {topSearch.map((item: any, index) =>
+                  renderItem(item, index + 20, true)
+                )}
+              </Command.Group>
 
               {results.map((item, index) => renderItem(item, index))}
             </Command.List>
