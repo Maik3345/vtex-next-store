@@ -28,7 +28,7 @@ export const SearchBar = () => {
 
   return (
     <>
-      <div className="hidden lg:flex">
+      <div className="hidden md:flex">
         <Button
           aria-label="Quick search"
           className="text-sm font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20"
@@ -53,7 +53,7 @@ export const SearchBar = () => {
         </Button>
       </div>
 
-      <div className="flex sm:hidden">
+      <div className="flex md:hidden">
         <button
           onClick={handleOpenCmdk}
           className={clsx(
