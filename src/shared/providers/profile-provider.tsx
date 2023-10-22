@@ -6,5 +6,7 @@ import { createContext } from "react";
 const ProfileContext = createContext({} as UseProfileType);
 
 export const ProfileProvider = () => {
-  return <ProfileContext.Provider value={useProfile()} />;
+  const context = useProfile();
+
+  return <ProfileContext.Provider value={context} />;
 };

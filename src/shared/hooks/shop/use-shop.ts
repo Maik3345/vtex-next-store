@@ -11,7 +11,7 @@ export interface UseShopType {}
 export const useShop = (): UseShopType => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [localShop] = useLocalStorage<string>(SHOP_KEY);
-  const { setDisclosure, handleSetShop } = useShopStore();
+  const { shopName, setDisclosure, handleSetShop } = useShopStore();
 
   const handleGetLocalShop = () => {
     if (localShop) {
@@ -23,7 +23,7 @@ export const useShop = (): UseShopType => {
 
   useEffect(() => {
     handleGetLocalShop();
-  }, []);
+  }, [shopName]);
 
   useEffect(() => {
     setDisclosure({

@@ -22,23 +22,30 @@ import {
   SearchLinearIcon,
 } from "../icons";
 
-import { SearchResultItem, useCmdk, useShopStore, useTopSearch } from "@shared";
+import {
+  SearchResultItem,
+  useCmdk,
+  useSearchByTerm,
+  useShopStore,
+  useTopSearch,
+} from "@shared";
+import Image from "next/image";
+import Link from "next/link";
 
 export const Cmdk: FC<{}> = () => {
   const { topSearch } = useTopSearch();
+  const { term, totalSearchItems, searchByTerm, getViewAllUrl, handleSetTerm } =
+    useSearchByTerm();
   const { shopName } = useShopStore();
   const {
     slots,
-    query,
     shouldOpen,
     activeItem,
     listRef,
-    results,
     isOpen,
     menuNodes,
     eventRef,
     recentSearches,
-    setQuery,
     setActiveItem,
     onInputKeyDown,
     onItemSelect,
@@ -75,6 +82,7 @@ export const Cmdk: FC<{}> = () => {
   const renderItem = useCallback(
     (item: SearchResultItem, index: number, isRecent = false) => {
       const isLvl1 = item.type === "lvl1";
+      const image = item.thumbnail;
 
       const mainIcon = isRecent ? (
         <SearchLinearIcon
@@ -109,7 +117,16 @@ export const Cmdk: FC<{}> = () => {
           }}
         >
           <div className={slots.leftWrapper()}>
-            {mainIcon}
+            {image ? (
+              <Image
+                src={image.imageUrl}
+                alt={image.imageLabel}
+                width={40}
+                height={40}
+              />
+            ) : (
+              mainIcon
+            )}
             <div className={slots.itemContent()}>
               {!isLvl1 && (
                 <span className={slots.itemParentTitle()}>
@@ -148,7 +165,7 @@ export const Cmdk: FC<{}> = () => {
         motionProps={{
           onAnimationComplete: () => {
             if (!isOpen) {
-              setQuery("");
+              handleSetTerm("");
             }
           },
         }}
@@ -172,22 +189,24 @@ export const Cmdk: FC<{}> = () => {
                 autoFocus={!isWebKit()}
                 className={slots.input()}
                 placeholder={`Search in ${shopName}`}
-                value={query}
+                value={term}
                 onKeyDown={onInputKeyDown}
-                onValueChange={setQuery}
+                onValueChange={handleSetTerm}
               />
-              {query.length > 0 && <CloseButton onPress={() => setQuery("")} />}
+              {searchByTerm.length > 0 && (
+                <CloseButton onPress={() => handleSetTerm("")} />
+              )}
               <Kbd className="hidden md:block border-none px-2 py-1 ml-2 font-medium text-[0.6rem]">
                 ESC
               </Kbd>
             </div>
             <Command.List ref={listRef} className={slots.list()} role="listbox">
-              {query.length > 0 && (
+              {term.length > 0 && (
                 <Command.Empty>
                   <div className={slots.emptyWrapper()}>
                     <div>
-                      <p>No results for &quot;{query}&quot;</p>
-                      {query.length === 1 ? (
+                      <p>No results for &quot;{term}&quot;</p>
+                      {term.length === 1 ? (
                         <p className="text-default-400">
                           Try adding more characters to your search term.
                         </p>
@@ -201,7 +220,7 @@ export const Cmdk: FC<{}> = () => {
                 </Command.Empty>
               )}
 
-              {isEmpty(query) &&
+              {isEmpty(term) &&
                 (isEmpty(recentSearches) ? (
                   <div className={slots.emptyWrapper()}>
                     <p className="text-default-400">No recent searches</p>
@@ -235,7 +254,23 @@ export const Cmdk: FC<{}> = () => {
                 )}
               </Command.Group>
 
-              {results.map((item, index) => renderItem(item, index))}
+              <Command.Group
+                heading={
+                  <div className="flex items-center justify-between">
+                    <p className="text-default-600">Products for {term}</p>
+                  </div>
+                }
+              >
+                {searchByTerm.map((item, index) => renderItem(item, index))}
+
+                {totalSearchItems > 0 && (
+                  <div className="flex items-center justify-center pt-4 pb-4">
+                    <Link href={getViewAllUrl()} className="text-default-600">
+                      View all {totalSearchItems} products
+                    </Link>
+                  </div>
+                )}
+              </Command.Group>
             </Command.List>
           </Command>
         </ModalContent>

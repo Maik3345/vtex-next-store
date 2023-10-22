@@ -8,7 +8,7 @@ import {
   RECENT_SEARCHES_KEY,
 } from "@/config";
 import searchData from "@/config/search-meta.json";
-import { trackEvent, useCmdkStore } from "@/shared";
+import { ImageProductType, trackEvent, useCmdkStore } from "@/shared";
 import { isAppleDevice } from "@react-aria/utils";
 import { useLocalStorage, writeStorage } from "@rehooks/local-storage";
 import { intersectionBy, isEmpty } from "lodash";
@@ -43,6 +43,7 @@ export interface SearchResultItem {
   objectID: string;
   url: string;
   type: "lvl1" | "lvl2" | "lvl3";
+  thumbnail?: ImageProductType;
   hierarchy: {
     lvl1: string | null;
     lvl2?: string | null;
@@ -108,7 +109,7 @@ const cmdk = tv({
       "select-none",
     ],
     itemTitle: [
-      "truncate",
+      "break-words",
       "text-default-500",
       "group-data-[active=true]:text-primary-foreground",
       "select-none",

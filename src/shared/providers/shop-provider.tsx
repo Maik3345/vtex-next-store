@@ -6,5 +6,7 @@ import { createContext } from "react";
 const ShopContext = createContext({} as UseShopType);
 
 export const ShopProvider = () => {
-  return <ShopContext.Provider value={useShop()} />;
+  const context = useShop();
+
+  return <ShopContext.Provider value={context} />;
 };
