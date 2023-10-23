@@ -1,5 +1,14 @@
-import Image from "next/image";
+"use client";
+
+import { useProfileStore, useShopStore } from "@/shared";
 
 export default function Home() {
-  return <div>Home page</div>;
+  const { profile } = useProfileStore();
+  const { shopName } = useShopStore();
+
+  return (
+    <div>
+      Home page {profile?.email} {shopName}
+    </div>
+  );
 }

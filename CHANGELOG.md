@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- create the logic for setup the store
+- implemente the logic for change the selected store
+- implemente the logic for search products in the selected store
+
 ## [0.2.0] - 2023-10-21
 
 ### Added

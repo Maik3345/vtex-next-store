@@ -1,14 +1,14 @@
+import { NavBar } from "@/components";
+import { Cmdk } from "@/components/cmdk";
+import { fontSans } from "@/config/fonts";
+import { clsx } from "@nextui-org/shared-utils";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { NavBar } from "@/components";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Compra en línea en Vtex Next Store",
-  description: "Encuentra los mejores productos en Vtex Next Store",
+  title: "Buy the best products in Vtex Next Store",
+  description: "Found the best products in Vtex Next Store",
 };
 
 export default function RootLayout({
@@ -17,14 +17,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Providers>
-          <main className="dark text-foreground bg-background h-full">
+    <html suppressHydrationWarning lang="en">
+      <body
+        className={clsx(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+          <div className="relative flex flex-col" id="app-container">
             <NavBar />
-
             {children}
-          </main>
+          </div>
+
+          <Cmdk />
         </Providers>
       </body>
     </html>

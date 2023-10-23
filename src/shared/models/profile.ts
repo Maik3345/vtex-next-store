@@ -12,7 +12,7 @@ export interface Info {
 
 export interface ProfileInformationType {
   gender: string;
-  name: Name;
+  name: NameUser;
   location: Location;
   email: string;
   login: Login;
@@ -70,7 +70,7 @@ export interface Login {
   sha256: string;
 }
 
-export interface Name {
+export interface NameUser {
   title: string;
   first: string;
   last: string;
