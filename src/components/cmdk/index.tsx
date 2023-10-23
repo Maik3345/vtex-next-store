@@ -113,7 +113,7 @@ const CmdkWrapper = () => {
           </div>
           <Command.List ref={listRef} className={slots.list()} role="listbox">
             <div className="flex gap-5 pt-10">
-              <div className="w-80">
+              <div className="hidden md:flex w-80">
                 <TopSearch />
                 <SearchSuggestions />
               </div>
