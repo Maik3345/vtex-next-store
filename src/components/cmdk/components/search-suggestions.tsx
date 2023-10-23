@@ -1,9 +1,14 @@
-import { useSearchByTermStore, useSearchSuggestions } from "@/shared";
-import { Link, Listbox, ListboxItem } from "@nextui-org/react";
+import {
+  useCmdkContext,
+  useSearchByTermStore,
+  useSearchSuggestions,
+} from "@/shared";
+import { Listbox, ListboxItem } from "@nextui-org/react";
 
 export const SearchSuggestions = () => {
   const { searchSuggestions } = useSearchSuggestions();
   const { results } = useSearchByTermStore();
+  const { onItemSelect } = useCmdkContext();
 
   if (results.length === 0) return null;
 
@@ -19,10 +24,12 @@ export const SearchSuggestions = () => {
           aria-label="Search Suggestions actions"
         >
           {(item) => (
-            <ListboxItem key={item.objectID} color={"default"}>
-              <Link href={item.url} key={item.objectID}>
-                {item.content}
-              </Link>
+            <ListboxItem
+              onPress={() => onItemSelect(item)}
+              key={item.objectID}
+              color={"default"}
+            >
+              {item.content}
             </ListboxItem>
           )}
         </Listbox>

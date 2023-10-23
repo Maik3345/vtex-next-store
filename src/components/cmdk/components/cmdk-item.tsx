@@ -8,7 +8,7 @@ import {
 } from "@/components";
 import { SearchResultItem, useCmdkContext } from "@/shared";
 import { Command } from "cmdk";
-import Image from "next/image";
+import { Image } from "@nextui-org/react";
 
 export const CmdkItem = ({
   item,
@@ -61,6 +61,7 @@ export const CmdkItem = ({
       <div className={slots.leftWrapper()}>
         {image ? (
           <Image
+            isBlurred
             src={image.imageUrl}
             alt={image.imageLabel}
             className="border border-default-200 rounded-xl"

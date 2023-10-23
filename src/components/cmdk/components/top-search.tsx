@@ -1,9 +1,10 @@
-import { useSearchByTermStore, useTopSearch } from "@/shared";
-import { Link, Listbox, ListboxItem } from "@nextui-org/react";
+import { useCmdkContext, useSearchByTermStore, useTopSearch } from "@/shared";
+import { Listbox, ListboxItem } from "@nextui-org/react";
 
 export const TopSearch = () => {
   const { topSearch } = useTopSearch();
   const { results } = useSearchByTermStore();
+  const { onItemSelect } = useCmdkContext();
 
   if (!topSearch || !topSearch.length || results.length > 0) return null;
 
@@ -12,16 +13,14 @@ export const TopSearch = () => {
       <div className="flex items-center justify-between">
         <p className="pl-10 text-default-600">Top search</p>
       </div>
-      <Listbox
-        items={topSearch}
-        aria-label="Top search actions"
-        onAction={(key) => alert(key)}
-      >
+      <Listbox items={topSearch} aria-label="Top search actions">
         {(item) => (
-          <ListboxItem key={item.objectID} color={"default"}>
-            <Link href={item.url} key={item.objectID}>
-              {item.content}
-            </Link>
+          <ListboxItem
+            onPress={() => onItemSelect(item)}
+            key={item.objectID}
+            color={"default"}
+          >
+            {item.content}
           </ListboxItem>
         )}
       </Listbox>
