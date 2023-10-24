@@ -5,8 +5,8 @@ import React from "react";
 export const ProductList = ({ products }: { products: ProductType[] }) => {
   return (
     <>
-      {products.map((product: any) => (
-        <CardItem {...{ product }} />
+      {products.map((product) => (
+        <CardItem key={product.productId} {...{ product }} />
       ))}
     </>
   );
