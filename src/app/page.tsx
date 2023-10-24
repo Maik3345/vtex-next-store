@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <div>
-      Home page {profile?.email} {shopName}
+      Home page {profile?.user?.email} {shopName}
     </div>
   );
 }

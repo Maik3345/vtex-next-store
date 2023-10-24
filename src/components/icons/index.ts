@@ -4,3 +4,4 @@ export * from "./document-code";
 export * from "./hash";
 export * from "./search-icon";
 export * from "./search";
+export * from "./start";

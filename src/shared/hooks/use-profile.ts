@@ -1,47 +1,26 @@
 "use client";
 
-import { PROFILE_KEY } from "@/config";
-import useLocalStorage from "@rehooks/local-storage";
-import {
-  ProfileInformationType,
-  getProfileService,
-  useProfileStore,
-} from "@shared";
+import { useProfileStore } from "@shared";
+import { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 export interface UseProfileType {
-  profile: ProfileInformationType | null;
-  handleGetProfile: () => Promise<void>;
+  profile: Session | null;
 }
 
 export const useProfile = (): UseProfileType => {
   const store = useProfileStore();
+  const { data: session, status } = useSession();
   const { profile, setProfile } = store;
-  const [localProfile] = useLocalStorage<ProfileInformationType>(PROFILE_KEY);
-
-  const handleGetProfile = async () => {
-    const response = await getProfileService();
-    if (!response.results) return;
-    setProfile(response.results[0]);
-  };
-
-  const handlerGetLocalProfile = () => {
-    if (!localProfile || !localProfile?.email) {
-      return false;
-    }
-
-    setProfile(localProfile);
-    return true;
-  };
 
   useEffect(() => {
-    if (!handlerGetLocalProfile()) {
-      handleGetProfile();
+    if (session && session.user && session.user.email) {
+      setProfile(session);
     }
-  }, []);
+  }, [session, status]);
 
   return {
     profile,
-    handleGetProfile,
   };
 };

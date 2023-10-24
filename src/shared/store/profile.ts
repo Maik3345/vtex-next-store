@@ -1,17 +1,14 @@
 import { create } from "zustand";
-import { ProfileInformationType } from "..";
-import { writeStorage } from "@rehooks/local-storage";
-import { PROFILE_KEY } from "@/config";
+import { Session } from "next-auth";
 
 export interface ProfileStoreType {
-  profile: ProfileInformationType | null;
-  setProfile: (profile: ProfileInformationType) => void;
+  profile: Session | null;
+  setProfile: (profile: Session) => void;
 }
 
 export const useProfileStore = create<ProfileStoreType>((set) => ({
   profile: null,
-  setProfile: (profile: ProfileInformationType) => {
-    writeStorage(PROFILE_KEY, profile);
+  setProfile: (profile: Session) => {
     set({ profile });
   },
 }));

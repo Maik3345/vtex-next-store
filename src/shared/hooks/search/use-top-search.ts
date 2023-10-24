@@ -1,3 +1,5 @@
+"use client";
+
 import { SearchResultItem, getTopSearchService, useShopStore } from "@/shared";
 import { useEffect, useState } from "react";
 

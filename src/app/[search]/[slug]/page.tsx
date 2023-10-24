@@ -8,7 +8,7 @@ export default function ProductPage() {
 
   return (
     <div>
-      Product detail page {profile?.email} {shopName}
+      Product detail page {profile?.user?.email} {shopName}
     </div>
   );
 }

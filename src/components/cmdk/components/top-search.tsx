@@ -1,3 +1,5 @@
+"use client";
+
 import { useCmdkContext, useSearchByTermStore, useTopSearch } from "@/shared";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 
