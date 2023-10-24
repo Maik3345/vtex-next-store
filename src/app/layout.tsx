@@ -1,5 +1,5 @@
-import { NavBar } from "@/components/nav-bar";
 import { Cmdk } from "@/components/cmdk";
+import { NavBar } from "@/components/nav-bar";
 import { fontSans } from "@/config/fonts";
 import { clsx } from "@nextui-org/shared-utils";
 import type { Metadata } from "next";
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Found the best products in Vtex Next Store",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
   session,
 }: {

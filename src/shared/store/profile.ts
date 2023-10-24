@@ -3,12 +3,12 @@ import { Session } from "next-auth";
 
 export interface ProfileStoreType {
   profile: Session | null;
-  setProfile: (profile: Session) => void;
+  setProfile: (profile: Session | null) => void;
 }
 
 export const useProfileStore = create<ProfileStoreType>((set) => ({
   profile: null,
-  setProfile: (profile: Session) => {
+  setProfile: (profile: Session | null) => {
     set({ profile });
   },
 }));

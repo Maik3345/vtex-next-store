@@ -9,7 +9,7 @@ export const searchProductsService = async (
 
   if (!params || params === "") return [];
 
-  const url = `${endpoints.baseUrl}/api/search-products?account=${account}&${params}`;
+  const url = `${endpoints.baseUrl}/api/search-products?account=${account}&${params}&count=5`;
   console.log({ urlSearch: url });
 
   const response = await fetch(url);

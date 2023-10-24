@@ -12,7 +12,11 @@ export interface ProvidersProps {
   session: any;
 }
 
-export function Providers({ children, themeProps, session }: ProvidersProps) {
+export async function Providers({
+  children,
+  themeProps,
+  session,
+}: ProvidersProps) {
   return (
     <ClientProvider session={session}>
       <NextUIProvider>

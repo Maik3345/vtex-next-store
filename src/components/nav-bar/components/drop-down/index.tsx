@@ -12,10 +12,11 @@ import {
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { ShopSetupModal } from "../shop-setup-modal";
+import { signOut } from "next-auth/react";
 
 export const DropDown = () => {
-  const { profile } = useProfileStore();
-  const { shortShopName, disclosure } = useShopStore();
+  const { profile, setProfile } = useProfileStore();
+  const { shortShopName, disclosure, handleSetShop } = useShopStore();
   const { onOpen } = disclosure ?? {};
   const [showComponent, setShowComponent] = useState(false);
 
@@ -74,6 +75,17 @@ export const DropDown = () => {
                   : "Configure shop:"}
               </p>
               Setup the shop
+            </DropdownItem>
+            <DropdownItem>
+              <p
+                onClick={() => {
+                  setProfile(null);
+                  handleSetShop(null);
+                  signOut();
+                }}
+              >
+                Log out
+              </p>
             </DropdownItem>
           </DropdownMenu>
         </UIDropdown>

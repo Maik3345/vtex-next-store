@@ -174,11 +174,7 @@ export interface InstallmentElement {
   value: number;
   total: number;
   sellerMerchantInstallments?: InstallmentElement[];
-  id?: ID;
-}
-
-export enum ID {
-  Exitocol = "EXITOCOL",
+  id?: any;
 }
 
 export interface PaymentSystem {

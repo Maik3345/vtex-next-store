@@ -1,6 +1,11 @@
 "use client";
 
-import { useShopStore } from "@/shared";
+import {
+  normalizeShopName,
+  setupStoreService,
+  useProfileStore,
+  useShopStore,
+} from "@/shared";
 import { useState } from "react";
 
 export interface UseModalShopSetupType {
@@ -12,6 +17,9 @@ export interface UseModalShopSetupType {
 
 export const useShopSetupModal = (): UseModalShopSetupType => {
   const { shopName, disclosure, handleSetShop } = useShopStore();
+  const { profile } = useProfileStore();
+  const { user } = profile ?? {};
+  const { email } = user ?? {};
   const { onClose } = disclosure ?? {};
   const [shop, setShopName] = useState<string | null>(shopName);
   const isEnabled = shop && shop !== shopName ? false : true;
@@ -20,9 +28,16 @@ export const useShopSetupModal = (): UseModalShopSetupType => {
     setShopName(value);
   };
 
-  const handlerSaveShop = () => {
-    if (isEnabled || !shop) return;
-    handleSetShop(shop);
+  const handlerSaveShop = async () => {
+    if (isEnabled || !shop || !email) return;
+
+    const normalizedShop = normalizeShopName(shop);
+
+    const response = await setupStoreService(normalizedShop, email);
+
+    if (!response) return;
+
+    handleSetShop(normalizedShop);
     onClose && onClose();
   };
 

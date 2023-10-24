@@ -1,17 +1,37 @@
+"use client";
+
 import { ProductList } from "@/components";
-import { searchProductsService } from "@/shared";
+import { ProductType, searchProductsService, useShopStore } from "@/shared";
+import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 
-export default async function SearchPage({
-  searchParams,
-  params: { search },
-}: {
+export default function SearchPage(props: {
   params: {
     search: string;
   };
   searchParams: Record<string, string>;
 }) {
-  const products = await searchProductsService("puntoscolombia", searchParams);
+  const {
+    searchParams,
+    params: { search },
+  } = props;
+  const { shopName } = useShopStore();
+  const [products, setProducts] = useState<ProductType[]>([]);
+
+  // const { shopName, setDisclosure, handleSetShop } = useShopStore();
+
+  const handlerGetProducts = async (shop: string) => {
+    if (shop) {
+      const products = await searchProductsService(shop, searchParams);
+      setProducts(products);
+    }
+  };
+
+  useEffect(() => {
+    if (shopName) {
+      handlerGetProducts(shopName);
+    }
+  }, [shopName]);
 
   if (!products.length) {
     return <p>PAGE NOT FOUND</p>;

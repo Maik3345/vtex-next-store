@@ -1,8 +1,8 @@
 "use client";
 
-import { useProfileStore } from "@shared";
+import { getSessionService, useProfileStore, useShopStore } from "@shared";
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 export interface UseProfileType {
@@ -10,13 +10,28 @@ export interface UseProfileType {
 }
 
 export const useProfile = (): UseProfileType => {
-  const store = useProfileStore();
+  const { profile, setProfile } = useProfileStore();
+  const { handleSetShop, disclosure } = useShopStore();
+  const { onOpen } = disclosure ?? {};
   const { data: session, status } = useSession();
-  const { profile, setProfile } = store;
+
+  const getSessionData = async (email: string) => {
+    const userData = email ? await getSessionService(email) : null;
+    const { vtexAccountName } = userData ?? {};
+
+    if (vtexAccountName) {
+      handleSetShop(vtexAccountName);
+    } else {
+      onOpen && onOpen();
+    }
+  };
 
   useEffect(() => {
-    if (session && session.user && session.user.email) {
+    if (session && session.user && session.user.email && !profile) {
       setProfile(session);
+      getSessionData(session.user.email);
+    } else if (session === null) {
+      signIn();
     }
   }, [session, status]);
 
