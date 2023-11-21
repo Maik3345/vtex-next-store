@@ -1,6 +1,11 @@
 "use client";
 
-import { getSessionService, useProfileStore, useShopStore } from "@shared";
+import {
+  getSessionService,
+  setCookieShop,
+  useProfileStore,
+  useShopStore,
+} from "@shared";
 import { Session } from "next-auth";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
@@ -20,6 +25,7 @@ export const useProfile = (): UseProfileType => {
     const { vtexAccountName } = userData ?? {};
 
     if (vtexAccountName) {
+      setCookieShop(vtexAccountName);
       handleSetShop(vtexAccountName);
     } else {
       onOpen && onOpen();

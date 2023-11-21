@@ -1,11 +1,9 @@
-"use client";
-
 import { ProductList } from "@/components";
-import { ProductType, searchProductsService, useShopStore } from "@/shared";
-import { useEffect, useState } from "react";
+import { searchProductsService } from "@/shared";
+import { cookies } from "next/headers";
 import styles from "./index.module.css";
 
-export default function SearchPage(props: {
+export default async function SearchPage(props: {
   params: {
     search: string;
   };
@@ -15,23 +13,12 @@ export default function SearchPage(props: {
     searchParams,
     params: { search },
   } = props;
-  const { shopName } = useShopStore();
-  const [products, setProducts] = useState<ProductType[]>([]);
 
-  // const { shopName, setDisclosure, handleSetShop } = useShopStore();
-
-  const handlerGetProducts = async (shop: string) => {
-    if (shop) {
-      const products = await searchProductsService(shop, searchParams);
-      setProducts(products);
-    }
-  };
-
-  useEffect(() => {
-    if (shopName) {
-      handlerGetProducts(shopName);
-    }
-  }, [shopName]);
+  const cookieStore = cookies();
+  const vtexAccountName = cookieStore.get("vtex_account");
+  const products = vtexAccountName
+    ? await searchProductsService(vtexAccountName?.value, searchParams)
+    : [];
 
   if (!products.length) {
     return <p>PAGE NOT FOUND</p>;

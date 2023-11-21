@@ -2,6 +2,7 @@
 
 import {
   normalizeShopName,
+  setCookieShop,
   setupStoreService,
   useProfileStore,
   useShopStore,
@@ -31,13 +32,14 @@ export const useShopSetupModal = (): UseModalShopSetupType => {
   const handlerSaveShop = async () => {
     if (isEnabled || !shop || !email) return;
 
-    const normalizedShop = normalizeShopName(shop);
+    const vtexAccountName = normalizeShopName(shop);
 
-    const response = await setupStoreService(normalizedShop, email);
+    const response = await setupStoreService(vtexAccountName, email);
 
     if (!response) return;
 
-    handleSetShop(normalizedShop);
+    setCookieShop(vtexAccountName);
+    handleSetShop(vtexAccountName);
     onClose && onClose();
   };
 
