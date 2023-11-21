@@ -9,6 +9,7 @@
     "lint": "next lint",
     "postinstall": "npx husky install",
     "prisma:push": "npx prisma db push",
+    "vercel:pull": "vercel env pull .env  ",
     "test": "jest --watch"
   },
   "dependencies": {
