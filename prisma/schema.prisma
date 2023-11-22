@@ -48,6 +48,13 @@ model User {
   sessions        Session[]
 }
 
+model HomePage {
+  id        String   @id @default(cuid())
+  section   String
+  props     Json?
+  createdAt DateTime? @default(now())
+}
+
 model VerificationToken {
   id         Int      @id @default(autoincrement())
   identifier String

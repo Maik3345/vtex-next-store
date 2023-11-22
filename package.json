@@ -9,6 +9,7 @@
     "lint": "next lint",
     "postinstall": "npx husky install",
     "prisma:push": "npx prisma db push",
+    "prisma:studio": "npx prisma studio",
     "vercel:pull": "vercel env pull .env  ",
     "test": "jest --watch"
   },
@@ -30,6 +31,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-multi-ref": "^1.0.1",
+    "swiper": "^11.0.5",
     "zustand": "^4.4.4"
   },
   "devDependencies": {
