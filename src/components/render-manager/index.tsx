@@ -14,13 +14,16 @@ export const RenderManager = ({
     createdAt: Date | null;
   }[];
 }) => {
-  return content.map((item) => {
+  return content.map((item, index) => {
     const { section, props } = item;
     const Component = dynamic(() =>
       import(`@/components`).then((m: any) => m[section])
     );
     return (
-      <React.Suspense fallback={<div>Loading...</div>}>
+      <React.Suspense
+        key={`component-${index}-${section}`}
+        fallback={<div>Loading...</div>}
+      >
         <Component {...(props as any)} />
       </React.Suspense>
     );
