@@ -24,8 +24,8 @@ export const Carousel = (props: {
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
         style={{ maxWidth: 1700, margin: "0 auto" }}
       >
-        {slides.map((slide) => (
-          <SwiperSlide>
+        {slides.map((slide, index) => (
+          <SwiperSlide key={`slider-${index}`}>
             <Image
               src={slide.image}
               alt={slide.alt}
