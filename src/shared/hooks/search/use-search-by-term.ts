@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SearchResultItem,
   getSearchByTermService,
@@ -6,6 +8,7 @@ import {
   useShopStore,
 } from "@/shared";
 import { useEffect } from "react";
+import debounce from "lodash.debounce";
 
 export interface UseSearchByTermType {
   results: SearchResultItem[];
@@ -14,6 +17,11 @@ export interface UseSearchByTermType {
   getViewAllUrl: () => string;
   handleSetTerm: (term: string) => void;
 }
+
+/**
+ * Debounce function to avoid multiple calls to the API, this method is created outside of the hook because react create multiple instances of the hook and the debounce function will be created multiple times.
+ */
+const callSearchDebounce = debounce((fn: () => void) => fn(), 500);
 
 export const useSearchByTerm = (): UseSearchByTermType => {
   const { shopName } = useShopStore();
@@ -29,13 +37,19 @@ export const useSearchByTerm = (): UseSearchByTermType => {
   const handleGetSearchByTerm = async (termSearch: string) => {
     if (shopName) {
       const response = await getSearchByTermService(shopName, termSearch);
+
+      if (!response || !response.products || response.products.length === 0) {
+        setResults([]);
+        return;
+      }
+
       const mappedSearch: SearchResultItem[] = response.products.map(
         (search) => ({
           content: search.productName,
           objectID: search.cacheId,
           type: "lvl1",
           thumbnail: search.items[0].images[0],
-          url: search.link,
+          url: `/${search.linkText}/p`,
           hierarchy: { lvl1: search.cacheId },
         })
       );
@@ -67,18 +81,22 @@ export const useSearchByTerm = (): UseSearchByTermType => {
     return `/${termFormatted}?_q=${termFormatted}&map=ft`;
   };
 
-  useEffect(() => {
-    if (term == null || term.trim() === "") {
+  const searchByTerm = (termSearch: string) => {
+    if (termSearch == null || termSearch.trim() === "") {
       setTotalSearchItems(0);
       setResults([]);
       return;
     }
 
-    const urlParams = term.trim().replace(/\s/g, "+");
+    const urlParams = termSearch.trim().replace(/\s/g, "+");
 
     if (urlParams && urlParams.length > 3) {
-      handleGetSearchByTerm(urlParams);
+      callSearchDebounce(() => handleGetSearchByTerm(urlParams));
     }
+  };
+
+  useEffect(() => {
+    searchByTerm(term);
   }, [term]);
 
   return { term, results, totalSearchItems, getViewAllUrl, handleSetTerm };

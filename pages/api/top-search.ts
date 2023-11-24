@@ -1,3 +1,4 @@
+import { endpoints } from "@/config";
 import { TopSearchType } from "@/shared";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -11,16 +12,16 @@ export default async function handler(
 
   if (!account) return res.status(400).json({ searches: [] });
 
-  const response = await fetch(
-    `https://${account}.vtexcommercestable.com.br/api/io/_v/api/intelligent-search/top_searches?locale=en-US`,
-    {
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  );
+  const { getTopSearch } = endpoints.vtex.search;
+  const domain = `https://${account}.${endpoints.vtex.environment}`;
+
+  const response = await fetch(`${domain}${getTopSearch}?locale=en-US`, {
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
   const data = await response.json().then((data) => data.searches.slice(0, 5));
   res.status(200).json({ searches: data });
 }

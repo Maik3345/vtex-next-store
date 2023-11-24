@@ -181,6 +181,7 @@ const CmdkWrapper = () => {
                       <div className="flex items-center justify-center pt-4 pb-4">
                         <Link
                           href={getViewAllUrl()}
+                          onClick={() => onClose()}
                           className="text-default-600"
                         >
                           View all {totalSearchItems} products

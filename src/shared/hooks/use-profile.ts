@@ -1,47 +1,47 @@
 "use client";
 
-import { PROFILE_KEY } from "@/config";
-import useLocalStorage from "@rehooks/local-storage";
 import {
-  ProfileInformationType,
-  getProfileService,
+  getSessionService,
+  setCookieShop,
   useProfileStore,
+  useShopStore,
 } from "@shared";
+import { Session } from "next-auth";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 export interface UseProfileType {
-  profile: ProfileInformationType | null;
-  handleGetProfile: () => Promise<void>;
+  profile: Session | null;
 }
 
 export const useProfile = (): UseProfileType => {
-  const store = useProfileStore();
-  const { profile, setProfile } = store;
-  const [localProfile] = useLocalStorage<ProfileInformationType>(PROFILE_KEY);
+  const { profile, setProfile } = useProfileStore();
+  const { handleSetShop, disclosure } = useShopStore();
+  const { onOpen } = disclosure ?? {};
+  const { data: session, status } = useSession();
 
-  const handleGetProfile = async () => {
-    const response = await getProfileService();
-    if (!response.results) return;
-    setProfile(response.results[0]);
-  };
+  const getSessionData = async (email: string) => {
+    const userData = email ? await getSessionService(email) : null;
+    const { vtexAccountName } = userData ?? {};
 
-  const handlerGetLocalProfile = () => {
-    if (!localProfile || !localProfile?.email) {
-      return false;
+    if (vtexAccountName) {
+      setCookieShop(vtexAccountName);
+      handleSetShop(vtexAccountName);
+    } else {
+      onOpen && onOpen();
     }
-
-    setProfile(localProfile);
-    return true;
   };
 
   useEffect(() => {
-    if (!handlerGetLocalProfile()) {
-      handleGetProfile();
+    if (session && session.user && session.user.email && !profile) {
+      setProfile(session);
+      getSessionData(session.user.email);
+    } else if (session === null) {
+      signIn();
     }
-  }, []);
+  }, [session, status]);
 
   return {
     profile,
-    handleGetProfile,
   };
 };

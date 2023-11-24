@@ -1,3 +1,4 @@
+import { endpoints } from "@/config";
 import { ProductSearchType } from "@/shared";
 
 export const getSearchByTermService = async (
@@ -5,7 +6,7 @@ export const getSearchByTermService = async (
   term: string
 ): Promise<ProductSearchType> => {
   return fetch(
-    `/api/search-by-term?account=${account}&term=${term}&simulationBehavior=default&count=5&page=1&sort=price:desc&locale=en-US&hideUnavailableItems=false`,
+    `${endpoints.baseUrl}/api/search-by-term?account=${account}&term=${term}&simulationBehavior=default&count=5&page=1&sort=price:desc&locale=en-US&hideUnavailableItems=false`,
     {
       headers: {
         "Content-Type": "application/json",

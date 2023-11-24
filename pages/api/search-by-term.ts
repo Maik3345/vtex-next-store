@@ -1,4 +1,5 @@
-import { ProductSearchType } from "@/shared";
+import { endpoints } from "@/config";
+import { ProductSearchType, objectToQueryString } from "@/shared";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 interface ResponseData extends ProductSearchType {}
@@ -7,16 +8,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const {
-    account,
-    term,
-    simulationBehavior,
-    count,
-    page,
-    sort,
-    locale,
-    hideUnavailableItems,
-  } = req.query;
+  const { account } = req.query;
+
+  const params = objectToQueryString(req.query, ["account"]);
 
   if (!account)
     return res.status(400).json({
@@ -29,16 +23,16 @@ export default async function handler(
       pagination: null,
     });
 
-  const response = await fetch(
-    `https://${account}.vtexcommercestable.com.br/api/io/_v/api/intelligent-search/product_search/?query=${term}&simulationBehavior=${simulationBehavior}&count=${count}&page=${page}&sort=${sort}&locale=${locale}&hideUnavailableItems=${hideUnavailableItems}`,
-    {
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  );
+  const { searchProductsByTerm } = endpoints.vtex.search;
+  const domain = `https://${account}.${endpoints.vtex.environment}`;
+
+  const response = await fetch(`${domain}${searchProductsByTerm}?${params}`, {
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
   const data = await response.json();
   res.status(200).json(data);
 }
