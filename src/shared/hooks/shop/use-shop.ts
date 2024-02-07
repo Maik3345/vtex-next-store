@@ -11,19 +11,17 @@ export interface UseShopType {}
 export const useShop = (): UseShopType => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [localShop] = useLocalStorage<string>(SHOP_KEY);
-  const { shopName, setDisclosure, handleSetShop } = useShopStore();
+  const { setDisclosure, handleSetShop } = useShopStore();
 
   const handleGetLocalShop = () => {
     if (localShop) {
       handleSetShop(localShop);
-    } else {
-      onOpen();
     }
   };
 
   useEffect(() => {
     handleGetLocalShop();
-  }, [shopName]);
+  }, []);
 
   useEffect(() => {
     setDisclosure({

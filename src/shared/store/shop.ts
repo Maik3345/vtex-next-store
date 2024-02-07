@@ -1,7 +1,7 @@
-import { writeStorage } from "@rehooks/local-storage";
 import { create } from "zustand";
-import { normalizeShopName, sliceShopName } from "..";
+import { sliceShopName } from "..";
 import { SHOP_KEY } from "@/config";
+import { writeStorage } from "@rehooks/local-storage";
 
 interface DisclosureType {
   isOpen: boolean;
@@ -15,7 +15,7 @@ export interface ShopStoreType {
   shortShopName: string | null;
   disclosure: DisclosureType | null;
   setDisclosure: (disclosure: DisclosureType) => void;
-  handleSetShop: (shopName: string) => void;
+  handleSetShop: (shopName: string | null) => void;
 }
 
 export const useShopStore = create<ShopStoreType>((set) => ({
@@ -23,10 +23,10 @@ export const useShopStore = create<ShopStoreType>((set) => ({
   shortShopName: null,
   disclosure: null,
   setDisclosure: (disclosure) => set({ disclosure }),
-  handleSetShop: (shop: string) => {
+  handleSetShop: (shop: string | null) => {
     set({
-      shopName: normalizeShopName(shop),
-      shortShopName: sliceShopName(shop),
+      shopName: shop,
+      shortShopName: shop ? sliceShopName(shop) : shop,
     });
     writeStorage(SHOP_KEY, shop);
   },

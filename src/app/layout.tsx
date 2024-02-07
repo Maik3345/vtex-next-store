@@ -1,5 +1,5 @@
-import { NavBar } from "@/components";
 import { Cmdk } from "@/components/cmdk";
+import { NavBar } from "@/components/nav-bar";
 import { fontSans } from "@/config/fonts";
 import { clsx } from "@nextui-org/shared-utils";
 import type { Metadata } from "next";
@@ -13,8 +13,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  session,
 }: {
   children: React.ReactNode;
+  session: any;
 }) {
   return (
     <html suppressHydrationWarning lang="en">
@@ -24,13 +26,13 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col" id="app-container">
-            <NavBar />
-            {children}
-          </div>
-
+        <Providers
+          session={session}
+          themeProps={{ attribute: "class", defaultTheme: "dark" }}
+        >
           <Cmdk />
+          <NavBar />
+          {children}
         </Providers>
       </body>
     </html>

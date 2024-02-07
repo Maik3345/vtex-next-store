@@ -1,14 +1,13 @@
-"use client";
+import { RenderManager } from "@/components";
+import { getHomePageContent } from "@/shared";
 
-import { useProfileStore, useShopStore } from "@/shared";
-
-export default function Home() {
-  const { profile } = useProfileStore();
-  const { shopName } = useShopStore();
+export default async function Home() {
+  const content = await getHomePageContent();
+  console.log({ content });
 
   return (
     <div>
-      Home page {profile?.email} {shopName}
+      <RenderManager content={content} />
     </div>
   );
 }

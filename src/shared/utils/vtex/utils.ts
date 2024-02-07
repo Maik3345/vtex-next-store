@@ -17,6 +17,5 @@ export const normalizeShopName = (shop: string) => {
  * return the first 16 characters followed by "...". Otherwise, it will return the full shop name.
  */
 export const sliceShopName = (shop: string) => {
-  const shopName = normalizeShopName(shop);
-  return shopName.length > 16 ? `${shopName.slice(0, 16)}...` : shopName;
+  return shop.length > 16 ? `${shop.slice(0, 16)}...` : shop;
 };

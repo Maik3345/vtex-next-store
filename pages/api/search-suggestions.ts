@@ -1,3 +1,4 @@
+import { endpoints } from "@/config";
 import { TopSearchType } from "@/shared";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -11,8 +12,11 @@ export default async function handler(
 
   if (!account || !term) return res.status(400).json({ searches: [] });
 
+  const { getSuggestionsBySearch } = endpoints.vtex.search;
+  const domain = `https://${account}.${endpoints.vtex.environment}`;
+
   const response = await fetch(
-    `https://${account}.vtexcommercestable.com.br/api/io/_v/api/intelligent-search/search_suggestions?query=${term}`,
+    `${domain}${getSuggestionsBySearch}?query=${term}`,
     {
       mode: "no-cors",
       headers: {

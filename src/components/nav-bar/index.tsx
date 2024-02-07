@@ -10,7 +10,7 @@ import { SearchBar } from "..";
 import { AcmeLogo } from "../icons";
 import { DropDown } from "./components";
 
-const NavBar = () => {
+export const NavBar = () => {
   return (
     <UINavBar isBordered>
       <NavbarContent justify="start">
@@ -29,5 +29,3 @@ const NavBar = () => {
     </UINavBar>
   );
 };
-
-export default NavBar;

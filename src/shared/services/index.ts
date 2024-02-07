@@ -1,2 +1,3 @@
-export * from "./profile";
-export * from "./shop";
+export * from './home';
+export * from './shop';
+export * from './user';
